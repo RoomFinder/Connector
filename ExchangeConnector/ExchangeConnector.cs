@@ -90,5 +90,10 @@ namespace FindFreeRoom.ExchangeConnector
 
 			return LocationFilter.Contains(emailAddress.Address);
 		}
+
+		public IEnumerable<string> GetAllRoomLists()
+		{
+			return _service.GetRoomLists().Select(x => x.Address);
+		}
 	}
 }
