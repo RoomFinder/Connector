@@ -37,10 +37,7 @@ namespace FindFreeRoom.ConnectorConsole
 			var roomsNearby = connector.GetFilteredRooms();
 			var roomsWithLocations = locations.ResolveLocations(roomsNearby);
 
-			foreach (var room in roomsWithLocations)
-			{
-				Console.WriteLine(room.Name);
-			}
+			connector.PrintAvaialility(roomsWithLocations);
 		}
 	}
 }

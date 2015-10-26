@@ -95,5 +95,36 @@ namespace FindFreeRoom.ExchangeConnector
 		{
 			return _service.GetRoomLists().Select(x => x.Address);
 		}
+
+		public void PrintAvaialility(IEnumerable<RoomInfo> rooms)
+		{
+			var attendees =
+				rooms.Select(
+					r => new AttendeeInfo {AttendeeType = MeetingAttendeeType.Room, ExcludeConflicts = false, SmtpAddress = r.RoomId}).ToList();
+			attendees.Add(new AttendeeInfo()
+			{
+				SmtpAddress = _serviceEmail,
+				AttendeeType = MeetingAttendeeType.Organizer
+			});
+
+			var timeWindow = new TimeWindow(DateTime.Now, DateTime.Now.AddDays(1));
+
+			AvailabilityOptions options = new AvailabilityOptions
+			{	
+				MeetingDuration = 30,
+				RequestedFreeBusyView = FreeBusyViewType.FreeBusy
+			};
+			var availabilities = _service.GetUserAvailability(attendees, timeWindow, AvailabilityData.FreeBusy, options);
+
+			var table = attendees.Zip(availabilities.AttendeesAvailability, (attendee, availability) =>
+			{
+				var info = Helper.CollapseCalendar(availability.CalendarEvents.Select(x => new TimeInterval(x.StartTime, x.EndTime)));
+				return new Tuple<string, DateTime, TimeSpan>(attendee.SmtpAddress, info.Start, info.End - info.Start);
+			});
+			foreach (var tuple in table)
+			{
+				Console.WriteLine($"{tuple.Item1} is available from {tuple.Item2} for {tuple.Item3}");
+			}
+		}
 	}
 }
