@@ -49,8 +49,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ExchangeConnector.cs" />
-    <Compile Include="Location.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RoomWithLocation.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

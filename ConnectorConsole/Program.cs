@@ -33,7 +33,7 @@ namespace FindFreeRoom.ConnectorConsole
 			connector.ActiveLocations = locations.OfSite(currentSite).ToArray(); // filter locations by site
 
 			connector.Connect();
-			var roomsNearby = connector.GetFilteredRooms();
+			var roomsNearby = connector.GetFilteredRooms().Select(i => new Tuple<string, string>(i.LocationId, i.RoomId));
 			var roomsWithLocations = locations.ResolveLocations(roomsNearby);
 
 		}
