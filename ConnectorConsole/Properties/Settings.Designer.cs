@@ -70,5 +70,17 @@ namespace FindFreeRoom.ConnectorConsole.Properties {
                 this["serverUrl"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string currentSite {
+            get {
+                return ((string)(this["currentSite"]));
+            }
+            set {
+                this["currentSite"] = value;
+            }
+        }
     }
 }

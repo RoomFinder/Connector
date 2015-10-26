@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Linq;
 
 namespace FindFreeRoom.ConnectorConsole
 {
@@ -26,12 +27,13 @@ namespace FindFreeRoom.ConnectorConsole
 			var props = Properties.Settings.Default;
 			var connector = new ExchangeConnector.ExchangeConnector(props.username, props.password, props.serverUrl, props.serviceEmail);
 
-			string currentSite;
+			string currentSite = props.currentSite;
 			LocationResolver locations = new LocationResolver(); // TODO: we have persistent map: email -> site, building, floor
-			connector.ActiveLocations = locations.OfSite(currentSite); // filter locations by site
+			locations.Load("locationMap.csv");
+			connector.ActiveLocations = locations.OfSite(currentSite).ToArray(); // filter locations by site
 
 			connector.Connect();
-			var roomsNearby = connector.GetActiveRooms();
+			var roomsNearby = connector.GetFilteredRooms();
 			var roomsWithLocations = locations.ResolveLocations(roomsNearby);
 
 		}

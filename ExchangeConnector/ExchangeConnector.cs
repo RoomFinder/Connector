@@ -30,7 +30,7 @@ namespace FindFreeRoom.ExchangeConnector
 			//_service.TraceFlags = TraceFlags.All;
 		}
 
-		public StringCollection ActiveLocations { get; set; }
+		public string[] ActiveLocations { get; set; }
 
 		public void Connect()
 		{
@@ -76,9 +76,25 @@ namespace FindFreeRoom.ExchangeConnector
 			return _service.GetRoomLists().Where(FilterActive).SelectMany(LoadRooms).Select(i => i.Address);
 		}
 
+		public IEnumerable<Tuple<string, string>> GetFilteredRooms()
+		{
+			foreach (var list in _service.GetRoomLists().Where(FilterActive))
+			{
+				foreach (var room in LoadRooms(list))
+				{
+					yield return new Tuple<string, string>(list.Address, room.Address);
+				}
+			}
+		}
+
 		private IEnumerable<EmailAddress> LoadRooms(EmailAddress emailAddress)
 		{
 			return _service.GetRooms(emailAddress);
+		}
+
+		public IEnumerable<string> LoadRooms(string emailAddress)
+		{
+			return _service.GetRooms(new EmailAddress(emailAddress)).Select(email => email.Address);
 		}
 
 		private bool FilterActive(EmailAddress emailAddress)
