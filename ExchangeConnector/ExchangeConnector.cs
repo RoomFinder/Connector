@@ -61,6 +61,11 @@ namespace FindFreeRoom.ExchangeConnector
 
 		public string[] ActiveLocations { get; set; }
 
+		public IEnumerable<string> GetAllRoomLists()
+		{
+			return _service.GetRoomLists().Select(x => x.Address);
+		}
+
 		public IEnumerable<string> GetActiveRooms()
 		{
 			return _service.GetRoomLists().Where(FilterActive).SelectMany(LoadRooms).Select(i => i.Address);

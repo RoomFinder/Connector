@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConnectorConsole", "Connect
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExchangeConnector", "ExchangeConnector\ExchangeConnector.csproj", "{3A74659F-A481-47C9-8D5B-0B4FAE5B7DC4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LocationMapGenerator", "LocationMapGenerator\LocationMapGenerator.csproj", "{8F61E115-BEC2-44D4-BF8B-F013FED4DBF5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{3A74659F-A481-47C9-8D5B-0B4FAE5B7DC4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3A74659F-A481-47C9-8D5B-0B4FAE5B7DC4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3A74659F-A481-47C9-8D5B-0B4FAE5B7DC4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8F61E115-BEC2-44D4-BF8B-F013FED4DBF5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8F61E115-BEC2-44D4-BF8B-F013FED4DBF5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8F61E115-BEC2-44D4-BF8B-F013FED4DBF5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8F61E115-BEC2-44D4-BF8B-F013FED4DBF5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
