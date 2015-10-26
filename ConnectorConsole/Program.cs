@@ -25,10 +25,16 @@ namespace FindFreeRoom.ConnectorConsole
 		{
 			var props = Properties.Settings.Default;
 			var connector = new ExchangeConnector.ExchangeConnector(props.username, props.password, props.serviceEmail);
-			connector.ActiveGroups = props.activeGroups;
+
+			string currentSite;
+			LocationResolver locations = new LocationResolver(); // TODO: we have persistent map: email -> site, building, floor
+			connector.ActiveLocations = locations.OfSite(currentSite); // filter locations by site
 
 			connector.Connect();
-			connector.PrintActive();
+			var roomsNearby = connector.GetActiveRooms();
+			var roomsWithLocations = locations.ResolveLocations(roomsNearby);
+
+
 		}
 	}
 }

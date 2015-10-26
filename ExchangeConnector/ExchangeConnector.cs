@@ -23,7 +23,7 @@ namespace FindFreeRoom.ExchangeConnector
 			// service.TraceFlags = TraceFlags.All;
 		}
 
-		public StringCollection ActiveGroups { get; set; }
+		public StringCollection ActiveLocations { get; set; }
 
 		public void Connect()
 		{
@@ -57,6 +57,11 @@ namespace FindFreeRoom.ExchangeConnector
 			}
 		}
 
+		public IEnumerable<string> GetActiveRooms()
+		{
+			return _service.GetRoomLists().Where(FilterActive).SelectMany(LoadRooms).Select(i => i.Address);
+		} 
+
 		private IEnumerable<EmailAddress> LoadRooms(EmailAddress emailAddress)
 		{
 			return _service.GetRooms(emailAddress);
@@ -64,10 +69,10 @@ namespace FindFreeRoom.ExchangeConnector
 
 		private bool FilterActive(EmailAddress emailAddress)
 		{
-			if (ActiveGroups == null)
+			if (ActiveLocations == null)
 				return true;
 
-			return ActiveGroups.Contains(emailAddress.Address);
+			return ActiveLocations.Contains(emailAddress.Address);
 		}
 	}
 }
