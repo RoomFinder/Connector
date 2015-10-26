@@ -1,4 +1,4 @@
-﻿namespace FindFreeRoom.ConnectorConsole
+﻿namespace FindFreeRoom.ExchangeConnector.Base
 {
 	public class Location
 	{

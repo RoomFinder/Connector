@@ -1,15 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace FindFreeRoom.ConnectorConsole
+namespace FindFreeRoom.ExchangeConnector.Base
 {
-	class LocationResolver
+	public class LocationResolver
 	{
 		// maps RoomList email to its location
 		private readonly Dictionary<string, Location> _locationMap = new Dictionary<string, Location>();
@@ -40,19 +36,15 @@ namespace FindFreeRoom.ConnectorConsole
 				.Where(x => string.Equals(x.Value.Site, currentSite, StringComparison.InvariantCultureIgnoreCase))
 				.Select(x => x.Key);
 		}
-
-		public IEnumerable<RoomInfo> ResolveLocations(IEnumerable<Tuple<string, string>> locations)
+		
+		public IEnumerable<RoomInfo> ResolveLocations(IEnumerable<RoomInfo> rooms)
 		{
-			return locations.Select(x => new RoomInfo {
-				EMail = x.Item2,
-				Location = _locationMap[x.Item1]
+			return rooms.Select(x => new RoomInfo {
+				RoomId = x.RoomId,
+				Name = x.Name,
+				LocationId = x.LocationId,
+				Location = _locationMap[x.LocationId]
 			});
 		}
-	}
-
-	internal class RoomInfo
-	{
-		public string EMail;
-		public Location Location;
 	}
 }

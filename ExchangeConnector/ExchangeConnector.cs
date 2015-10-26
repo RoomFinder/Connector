@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
+using FindFreeRoom.ExchangeConnector.Base;
 using Microsoft.Exchange.WebServices.Data;
 
 namespace FindFreeRoom.ExchangeConnector
@@ -59,28 +60,19 @@ namespace FindFreeRoom.ExchangeConnector
 			return result;
 		}
 
-		public string[] ActiveLocations { get; set; }
+		public string[] LocationFilter { get; set; }
 
-		public IEnumerable<string> GetAllRoomLists()
-		{
-			return _service.GetRoomLists().Select(x => x.Address);
-		}
-
-		public IEnumerable<string> GetActiveRooms()
-		{
-			return _service.GetRoomLists().Where(FilterActive).SelectMany(LoadRooms).Select(i => i.Address);
-		}
-
-		public IEnumerable<RoomWithLocation> GetFilteredRooms()
+		public IEnumerable<RoomInfo> GetFilteredRooms()
 		{
 			foreach (var list in _service.GetRoomLists().Where(FilterActive))
 			{
 				foreach (var room in LoadRooms(list))
 				{
-					yield return new RoomWithLocation
+					yield return new RoomInfo
 					{
 						LocationId = list.Address,
-						RoomId = room.Address
+                        RoomId = room.Address,
+						Name = room.Name
 					};
 				}
 			}
@@ -93,10 +85,10 @@ namespace FindFreeRoom.ExchangeConnector
 
 		private bool FilterActive(EmailAddress emailAddress)
 		{
-			if (ActiveLocations == null)
+			if (LocationFilter == null)
 				return true;
 
-			return ActiveLocations.Contains(emailAddress.Address);
+			return LocationFilter.Contains(emailAddress.Address);
 		}
 	}
 }
