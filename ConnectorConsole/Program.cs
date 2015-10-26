@@ -24,7 +24,7 @@ namespace FindFreeRoom.ConnectorConsole
 		static void DoWork()
 		{
 			var props = Properties.Settings.Default;
-			var connector = new ExchangeConnector.ExchangeConnector(props.username, props.password, props.serviceEmail);
+			var connector = new ExchangeConnector.ExchangeConnector(props.username, props.password, props.serverUrl, props.serviceEmail);
 
 			string currentSite;
 			LocationResolver locations = new LocationResolver(); // TODO: we have persistent map: email -> site, building, floor
@@ -33,7 +33,6 @@ namespace FindFreeRoom.ConnectorConsole
 			connector.Connect();
 			var roomsNearby = connector.GetActiveRooms();
 			var roomsWithLocations = locations.ResolveLocations(roomsNearby);
-
 
 		}
 	}

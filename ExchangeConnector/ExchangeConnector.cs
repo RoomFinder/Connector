@@ -9,25 +9,39 @@ namespace FindFreeRoom.ExchangeConnector
 	public class ExchangeConnector
 	{
 		private readonly ExchangeService _service;
+		private readonly string _serverUrl;
 		private readonly string _serviceEmail;
 
-		public ExchangeConnector(string username, string password, string serviceEmail)
+		public ExchangeConnector(string username, string password, string serverUrl, string serviceEmail)
 		{
+			_serverUrl = serverUrl;
 			_serviceEmail = serviceEmail;
-			_service = new ExchangeService(ExchangeVersion.Exchange2010)
+			_service = new ExchangeService(ExchangeVersion.Exchange2010);
+			if (string.IsNullOrEmpty(username))
 			{
-				Credentials = new WebCredentials(username, password)
-			};
+				_service.UseDefaultCredentials = true;
+			}
+			else
+			{
+				_service.Credentials = new WebCredentials(username, password);
+			}
 
-			// service.TraceEnabled = true;
-			// service.TraceFlags = TraceFlags.All;
+			//_service.TraceEnabled = true;
+			//_service.TraceFlags = TraceFlags.All;
 		}
 
 		public StringCollection ActiveLocations { get; set; }
 
 		public void Connect()
 		{
-			_service.AutodiscoverUrl(_serviceEmail, RedirectionUrlValidationCallback);
+			if (string.IsNullOrEmpty(_serverUrl))
+			{
+				_service.AutodiscoverUrl(_serviceEmail, RedirectionUrlValidationCallback);
+			}
+			else
+			{
+				_service.Url = new Uri(_serverUrl);
+			}
 		}
 
 		private static bool RedirectionUrlValidationCallback(string redirectionUrl)
@@ -60,7 +74,7 @@ namespace FindFreeRoom.ExchangeConnector
 		public IEnumerable<string> GetActiveRooms()
 		{
 			return _service.GetRoomLists().Where(FilterActive).SelectMany(LoadRooms).Select(i => i.Address);
-		} 
+		}
 
 		private IEnumerable<EmailAddress> LoadRooms(EmailAddress emailAddress)
 		{

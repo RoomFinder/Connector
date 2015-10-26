@@ -58,5 +58,17 @@ namespace FindFreeRoom.ConnectorConsole.Properties {
                 this["serviceEmail"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string serverUrl {
+            get {
+                return ((string)(this["serverUrl"]));
+            }
+            set {
+                this["serverUrl"] = value;
+            }
+        }
     }
 }
