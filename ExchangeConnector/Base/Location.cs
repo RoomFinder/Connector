@@ -5,5 +5,7 @@
 		public string Site;
 		public string Building;
 		public string Floor;
+
+		public Geometry Geometry; 
 	}
 }

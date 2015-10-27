@@ -48,6 +48,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Base\Distance.cs" />
+    <Compile Include="Base\Geometry.cs" />
     <Compile Include="Base\Location.cs" />
     <Compile Include="Base\LocationResolver.cs" />
     <Compile Include="Base\RoomInfo.cs" />
