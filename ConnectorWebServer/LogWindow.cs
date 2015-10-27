@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using ConnectorWebService;
@@ -16,6 +18,7 @@ namespace ConnectorWebServer
 		public LogWindow()
 		{
 			InitializeComponent();
+			Debug.WriteLine($"UI on thread {Thread.CurrentThread.ManagedThreadId}");
 		}
 
 		public void AddMessage(string format, params object[] args)

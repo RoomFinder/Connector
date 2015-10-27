@@ -29,7 +29,7 @@ namespace ConnectorWebService
 		{
 			try
 			{
-				_host.Open();
+				Task.Run(() => _host.Open());
 				Task.Run(() => SessionManager.GarbageCollectorAsync(_gcCancellation.Token));
 				_statusMonitor?.SetOnline();
 				Log?.AddMessage("Service successfully started at {0}", ServiceUri);

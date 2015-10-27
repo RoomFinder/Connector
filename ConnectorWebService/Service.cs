@@ -1,18 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
+using System.ServiceModel;
 using System.ServiceModel.Web;
+using System.Threading;
 using FindFreeRoom.ExchangeConnector;
 using FindFreeRoom.ExchangeConnector.Base;
 
 namespace ConnectorWebService
 {
+	[ServiceBehavior(ConcurrencyMode = ConcurrencyMode.Multiple)]
 	public class Service : IService
 	{
 
 		public IEnumerable<RoomDataContract> GetRooms(string ticket)
 		{
+			Debug.WriteLine($"Request on thread {Thread.CurrentThread.ManagedThreadId}");
 			ExchangeConnector connector;
 			if (!SessionManager.TryGetValue(ticket, out connector))
 			{
@@ -25,6 +30,7 @@ namespace ConnectorWebService
 
 		public string Login(string username, string password, string email, string site, string serviceUrl)
 		{
+			Debug.WriteLine($"Request on thread {Thread.CurrentThread.ManagedThreadId}");
 			if (string.IsNullOrEmpty(username))
 			{
 				throw new WebFaultException<string>($"{nameof(username)} is a mandatory parameter", HttpStatusCode.BadRequest);
