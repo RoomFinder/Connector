@@ -85,7 +85,6 @@
     <Resource Include="icon-error.ico" />
     <Resource Include="icon.ico" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\ConnectorWebService\ConnectorWebService.csproj">
       <Project>{9481F65D-94BF-4A39-B5F3-E484C4842003}</Project>
