@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.ServiceModel;
 using System.ServiceModel.Description;
 using System.ServiceModel.Web;
-using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace ConnectorWebService
@@ -14,6 +12,7 @@ namespace ConnectorWebService
 		private ILog _log;
 		private IStatusMonitor _statusMonitor;
 		private readonly WebServiceHost _host;
+		private readonly CancellationTokenSource _gcCancellation = new CancellationTokenSource();
 
 		public ServiceHost(ILog log, IStatusMonitor statusMonitor)
 		{
@@ -29,6 +28,7 @@ namespace ConnectorWebService
 			try
 			{
 				_host.Open();
+				Task.Run(() => SessionManager.GarbageCollectorAsync(_gcCancellation.Token));
 				_statusMonitor?.SetOnline();
 			}
 			catch (Exception ex)
@@ -42,6 +42,7 @@ namespace ConnectorWebService
 		{
 			try
 			{
+				_gcCancellation.Cancel();
 				_host.Close();
 				_statusMonitor?.SetOffline();
 			}

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.ServiceModel.Security.Tokens;
 using System.ServiceModel.Web;
 using FindFreeRoom.ExchangeConnector;
 using FindFreeRoom.ExchangeConnector.Base;
@@ -11,12 +10,11 @@ namespace ConnectorWebService
 {
 	public class Service : IService
 	{
-		private static readonly Dictionary<string, ExchangeConnector> ConnectionCache = new Dictionary<string, ExchangeConnector>();
 
 		public IEnumerable<RoomDataContract> GetRooms(string ticket)
 		{
 			ExchangeConnector connector;
-			if (!ConnectionCache.TryGetValue(ticket, out connector))
+			if (!SessionManager.TryGetValue(ticket, out connector))
 			{
 				throw new WebFaultException<string>("Invalid ticket", HttpStatusCode.Unauthorized);
 			}
@@ -51,12 +49,11 @@ namespace ConnectorWebService
 				locations.Load("locationMap.csv");
 				connector.LocationFilter = locations.OfSite(site).ToArray(); // filter locations by site
 				connector.Connect();
-#if DEBUG
-				string ticket = ConnectionCache.Count.ToString();
-#else
 				string ticket = Guid.NewGuid().ToString("N");
-#endif
-				ConnectionCache[ticket] = connector;
+				if (!SessionManager.TryAdd(ticket, connector))
+				{
+					throw new WebFaultException<string>("GUID conflict", HttpStatusCode.InternalServerError);
+				}
 				return ticket;
 			}
 			catch
