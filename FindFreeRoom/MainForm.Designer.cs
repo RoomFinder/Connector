@@ -35,6 +35,9 @@
 			this.buttonPanel = new System.Windows.Forms.Panel();
 			this.timeLabel = new System.Windows.Forms.Label();
 			this.ticker = new System.Windows.Forms.Timer(this.components);
+			this.clmName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.clmWaitingTime = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.clmWindowSize = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.buttonPanel.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -57,13 +60,17 @@
 			this.choicesListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+			this.choicesListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.clmName,
+            this.clmWaitingTime,
+            this.clmWindowSize});
 			this.choicesListView.Location = new System.Drawing.Point(0, 70);
 			this.choicesListView.MultiSelect = false;
 			this.choicesListView.Name = "choicesListView";
-			this.choicesListView.Size = new System.Drawing.Size(353, 84);
+			this.choicesListView.Size = new System.Drawing.Size(587, 166);
 			this.choicesListView.TabIndex = 1;
 			this.choicesListView.UseCompatibleStateImageBehavior = false;
-			this.choicesListView.View = System.Windows.Forms.View.List;
+			this.choicesListView.View = System.Windows.Forms.View.Details;
 			this.choicesListView.ItemSelectionChanged += new System.Windows.Forms.ListViewItemSelectionChangedEventHandler(this.choicesListView_ItemSelectionChanged);
 			// 
 			// reserveButton
@@ -89,7 +96,7 @@
 			this.buttonPanel.Dock = System.Windows.Forms.DockStyle.Top;
 			this.buttonPanel.Location = new System.Drawing.Point(0, 0);
 			this.buttonPanel.Name = "buttonPanel";
-			this.buttonPanel.Size = new System.Drawing.Size(353, 68);
+			this.buttonPanel.Size = new System.Drawing.Size(587, 68);
 			this.buttonPanel.TabIndex = 3;
 			// 
 			// timeLabel
@@ -106,11 +113,26 @@
 			this.ticker.Interval = 1000;
 			this.ticker.Tick += new System.EventHandler(this.ticker_Tick);
 			// 
+			// clmName
+			// 
+			this.clmName.Text = "Name";
+			this.clmName.Width = 400;
+			// 
+			// clmWaitingTime
+			// 
+			this.clmWaitingTime.Text = "Available";
+			this.clmWaitingTime.Width = 80;
+			// 
+			// clmWindowSize
+			// 
+			this.clmWindowSize.Text = "Available for";
+			this.clmWindowSize.Width = 80;
+			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(353, 154);
+			this.ClientSize = new System.Drawing.Size(587, 236);
 			this.Controls.Add(this.buttonPanel);
 			this.Controls.Add(this.choicesListView);
 			this.Name = "MainForm";
@@ -130,6 +152,9 @@
 		private System.Windows.Forms.Panel buttonPanel;
 		private System.Windows.Forms.Label timeLabel;
 		private System.Windows.Forms.Timer ticker;
+		private System.Windows.Forms.ColumnHeader clmName;
+		private System.Windows.Forms.ColumnHeader clmWaitingTime;
+		private System.Windows.Forms.ColumnHeader clmWindowSize;
 	}
 }
 

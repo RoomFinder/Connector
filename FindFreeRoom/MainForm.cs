@@ -66,13 +66,15 @@ namespace FindFreeRoom
 					.Where(room => room.Availability != TimeInterval.Zero), _myLocation)
 					.ToArray();
 
-				//	.Select(room => 
-				//		$"{room.Room.Name} from {room.Availability.Start.ToShortTimeString()} for {room.Availability.Duration.TotalMinutes} minutes").ToArray();
-
 				choicesListView.BeginUpdate();
 				foreach (var result in results)
 				{
-					var item = choicesListView.Items.Add(result.Room.Name);
+					var item = choicesListView.Items.Add(new ListViewItem(new[]
+					{
+						result.Room.Name,
+						FormatAvailableIn((int)(result.Availability.Start - DateTime.Now).TotalMinutes),
+						FormatAvailableFor((int)result.Availability.Duration.TotalMinutes)
+					}));
 					item.Tag = result.Room;
 				}
 				choicesListView.EndUpdate();
@@ -82,6 +84,32 @@ namespace FindFreeRoom
 				MessageBox.Show(ex.Message);
 				Application.Exit();
 			}
+		}
+
+		private static string FormatAvailableIn(int minutes)
+		{
+			if (minutes >= 120)
+			{
+				return $"in {minutes / 60} hours";
+			}
+			if (minutes <= 0)
+			{
+				return "now";
+			}
+			return $"in {minutes} min";
+		}
+
+		private static string FormatAvailableFor(int minutes)
+		{
+			if (minutes >= 8*60)
+			{
+				return "the whole day";
+			}
+			if (minutes >= 120)
+			{
+				return $"{minutes / 60} hours";
+			}
+			return $"{minutes} min";
 		}
 
 		private void ticker_Tick(object sender, EventArgs e)
