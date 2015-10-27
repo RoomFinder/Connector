@@ -15,6 +15,7 @@ namespace ConnectorWebService
 	[ServiceBehavior(ConcurrencyMode = ConcurrencyMode.Multiple)]
 	public class Service : IService
 	{
+		private const int MaxRoomsInResponse = 10;
 		private static readonly LocationResolver LocationResolver = new LocationResolver();
 
 		static Service()
@@ -43,14 +44,34 @@ namespace ConnectorWebService
 			return connector;
 		}
 
-		public IEnumerable<RoomDataContract> GetRooms(string ticket)
+		public IEnumerable<RoomDataContract> GetRooms(string lat, string lon, string ticket)
 		{
 			try
 			{
 				var connector = GetConnector(ticket);
 				var roomsNearby = connector.GetFilteredRooms();
-				var availableRooms = connector.GetAvaialility(roomsNearby).Where(a => a.Availability != TimeInterval.Zero);
-				return availableRooms.Select(Convertions.ToContract);
+				if (string.IsNullOrEmpty(lat) || string.IsNullOrEmpty(lon))
+				{
+					var availableRooms = connector.GetAvaialility(roomsNearby).Where(a => a.Availability != TimeInterval.Zero).Take(MaxRoomsInResponse);
+					return availableRooms.Select(Convertions.ToContract);
+				}
+				else
+				{
+					double latitude;
+					double longitude;
+					if (!double.TryParse(lat, out latitude) || !double.TryParse(lon, out longitude))
+					{
+						throw new WebFaultException<string>($"Invalid {nameof(lat)} or {nameof(lon)} values", HttpStatusCode.BadRequest);
+					}
+					var loc = new Location
+					{
+						// TODO: real elevation
+						Geometry = new Geometry(latitude, longitude, 120.0)
+					};
+					var availableRooms = connector.GetAvaialility(LocationResolver.ResolveLocations(roomsNearby));
+					availableRooms = LocationResolver.SmartSort(availableRooms, loc).Take(MaxRoomsInResponse);
+					return availableRooms.Select(Convertions.ToContract);
+				}
 			}
 			catch (WebFaultException<string>)
 			{

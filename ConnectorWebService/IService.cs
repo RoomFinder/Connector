@@ -9,8 +9,8 @@ namespace ConnectorWebService
 	public interface IService
 	{
 		[OperationContract]
-		[WebGet(UriTemplate = "rooms?ticket={ticket}", ResponseFormat = WebMessageFormat.Json)]
-		IEnumerable<RoomDataContract> GetRooms(string ticket);
+		[WebGet(UriTemplate = "rooms?lat={lat}&lon={lon}&ticket={ticket}", ResponseFormat = WebMessageFormat.Json)]
+		IEnumerable<RoomDataContract> GetRooms(string lat, string lon, string ticket);
 
 		[OperationContract]
 		[WebGet(UriTemplate = "rooms/{roomId}?ticket={ticket}", ResponseFormat = WebMessageFormat.Json)]
