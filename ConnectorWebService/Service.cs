@@ -15,6 +15,21 @@ namespace ConnectorWebService
 	[ServiceBehavior(ConcurrencyMode = ConcurrencyMode.Multiple)]
 	public class Service : IService
 	{
+		private static readonly LocationResolver LocationResolver = new LocationResolver();
+
+		static Service()
+		{
+			try
+			{
+				LocationResolver.Load("locationMap.csv");
+			}
+			catch (Exception ex)
+			{
+				Debug.WriteLine(ex.Message);
+				ServiceHost.StatusMonitor?.SetError($"Unable to load location map: {ex.Message}");
+				ServiceHost.Log?.AddMessage($"Unable to load location map: {ex.Message}");
+			}
+		}
 
 		private static ExchangeConnector GetConnector(string ticket)
 		{
@@ -57,10 +72,7 @@ namespace ConnectorWebService
 				{
 					throw new WebFaultException<string>("Unable to find the requested room", HttpStatusCode.NotFound);
 				}
-				// TODO: use shared instance
-				LocationResolver locations = new LocationResolver();
-				locations.Load("locationMap.csv");
-				var theRoomAvailability = connector.GetAvaialility(locations.ResolveLocations(new [] { theRoom })).First();
+				var theRoomAvailability = connector.GetAvaialility(LocationResolver.ResolveLocations(new [] { theRoom })).First();
 			
 				return theRoomAvailability.ToContract();
 			}
@@ -122,9 +134,7 @@ namespace ConnectorWebService
 			try
 			{
 				var connector = new ExchangeConnector(username, password, serviceUrl, email);
-				LocationResolver locations = new LocationResolver();
-				locations.Load("locationMap.csv");
-				connector.LocationFilter = locations.OfSite(site).ToArray(); // filter locations by site
+				connector.LocationFilter = LocationResolver.OfSite(site).ToArray(); // filter locations by site
 				connector.Connect();
 				string ticket = Guid.NewGuid().ToString("N");
 				if (!SessionManager.TryAdd(ticket, connector))

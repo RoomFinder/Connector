@@ -12,14 +12,14 @@ namespace ConnectorWebService
 		private static readonly Uri ServiceUri = new Uri("http://0.0.0.0:18799/api");
 
 		internal static ILog Log;
-		private IStatusMonitor _statusMonitor;
+		internal static IStatusMonitor StatusMonitor;
 		private readonly WebServiceHost _host;
 		private readonly CancellationTokenSource _gcCancellation = new CancellationTokenSource();
 
 		public ServiceHost(ILog log, IStatusMonitor statusMonitor)
 		{
 			Log = log;
-			_statusMonitor = statusMonitor;
+			StatusMonitor = statusMonitor;
 			_host = new WebServiceHost(typeof(Service), ServiceUri);
 			// TODO: Enable HTTPS - http://stackoverflow.com/questions/14933696
 			_host.AddDefaultEndpoints()[0].Binding = new WebHttpBinding();
@@ -30,15 +30,15 @@ namespace ConnectorWebService
 		{
 			try
 			{
-				Task.Run(() => _host.Open());
+				Task.Run(() => _host.Open()).Wait();
 				Task.Run(() => SessionManager.GarbageCollectorAsync(_gcCancellation.Token));
-				_statusMonitor?.SetOnline();
+				StatusMonitor?.SetOnline();
 				Log?.AddMessage("Service successfully started at {0}", ServiceUri);
 			}
 			catch (Exception ex)
 			{
 				Log?.AddMessage("Failed to start: {0}", ex);
-				_statusMonitor?.SetError(ex.Message);
+				StatusMonitor?.SetError(ex.Message);
 			}
 		}
 
@@ -48,19 +48,19 @@ namespace ConnectorWebService
 			{
 				_gcCancellation.Cancel();
 				_host.Close();
-				_statusMonitor?.SetOffline();
+				StatusMonitor?.SetOffline();
 			}
 			catch (Exception ex)
 			{
 				Log?.AddMessage("Failed to start: {0}", ex);
-				_statusMonitor?.SetError(ex.Message);
+				StatusMonitor?.SetError(ex.Message);
 			}
 		}
 
 		public void Dispose()
 		{
 			Log = null;
-			_statusMonitor = null;
+			StatusMonitor = null;
 			Stop();
 		}
 	}

@@ -35,6 +35,7 @@ namespace ConnectorWebServer
 
 		public void SetError(string message)
 		{
+			_icon.Icon = Properties.Resources.icon_error;
 			_icon.ShowBalloonTip(4000, "Error", message, ToolTipIcon.Error);
 		}
 
