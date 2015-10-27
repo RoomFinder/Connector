@@ -28,11 +28,11 @@ namespace ExchangeConnector.Tests
 				new Geometry(37.324953, -121.998867, 140.0)
 			};
 
-			var me = new Geometry(37.324761, -121.999824, 120.0);
+			var me = new Location { Geometry = new Geometry(37.324761, -121.999824, 120.0) };
 
 			foreach (var loc in locs)
 			{
-				Debug.WriteLine(Distance.Calculate(me, loc));
+				Debug.WriteLine(Distance.Calculate(me, new Location { Geometry = loc }));
 			}
 		}
 	}

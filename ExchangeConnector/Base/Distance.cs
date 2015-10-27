@@ -2,23 +2,37 @@
 
 namespace FindFreeRoom.ExchangeConnector.Base
 {
-	public class Distance
+	public static class Distance
 	{
-		public double DegreeToMeters = 1.0;
-		public double DefaultDistance = 1000.0; // in case if location geometry is unknown, it is always 1 kilometer 
+		// in case if location geometry is unknown
+		private static readonly double DefaultDistanceBetweenSites = 1000000.0; // 1000 km
+		private static readonly double DefaultDistanceBetweenBuildings = 1000.0; // 1 km
+		private static readonly double DefaultDistanceBetweenFloors = 100.0; // 100 m
+		private static readonly double DefaultDistanceBetweenRooms = 20.0; // 20 m
 
-		public double Calculate(Location from, Location to)
+		public static double Calculate(Location from, Location to)
 		{
+			if (from == null || to == null)
+			{
+				return DefaultDistanceBetweenSites;
+			}
 			if (from.Geometry == null || to.Geometry == null)
 			{
-				return DefaultDistance;
+				if (from.Site != to.Site)
+				{
+					return DefaultDistanceBetweenSites;
+				}
+				if (from.Building != to.Building)
+				{
+					return DefaultDistanceBetweenBuildings;
+				}
+				if (from.Floor != to.Floor)
+				{
+					return DefaultDistanceBetweenFloors;
+				}
+				return DefaultDistanceBetweenRooms;
 			}
 			return CalculateP(from.Geometry, to.Geometry) + Math.Abs(from.Geometry.Elevation - to.Geometry.Elevation);
-		}
-
-		public static double Calculate(Geometry from, Geometry to)
-		{
-			return CalculateP(from, to) + Math.Abs(from.Elevation - to.Elevation);
 		}
 
 		private static double CalculateP(Geometry from, Geometry to) // lat is Y
