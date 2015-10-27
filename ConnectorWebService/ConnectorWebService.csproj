@@ -53,12 +53,16 @@
     <Compile Include="ServiceHost.cs" />
     <Compile Include="Session.cs" />
     <Compile Include="SessionManager.cs" />
+    <Compile Include="Web\WebServer.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ExchangeConnector\ExchangeConnector.csproj">
       <Project>{3A74659F-A481-47C9-8D5B-0B4FAE5B7DC4}</Project>
       <Name>ExchangeConnector</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Web\index.html" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
