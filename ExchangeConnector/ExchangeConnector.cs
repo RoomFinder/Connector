@@ -12,15 +12,22 @@ namespace FindFreeRoom.ExchangeConnector
 	public class ExchangeConnector
 	{
 		private static readonly TimeSpan CreationTimeout = TimeSpan.FromSeconds(60);
-		private readonly ExchangeService _service;
+		private readonly ExchangeService _service = new ExchangeService(ExchangeVersion.Exchange2010);
 		private readonly string _serverUrl;
 		private readonly string _serviceEmail;
 
+		public ExchangeConnector(string serviceEmail) :
+			this(null, null, null, serviceEmail)
+		{
+		}
+
 		public ExchangeConnector(string username, string password, string serverUrl, string serviceEmail)
 		{
+			if (serviceEmail == null) throw new ArgumentNullException(nameof(serviceEmail));
+
 			_serverUrl = serverUrl;
 			_serviceEmail = serviceEmail;
-			_service = new ExchangeService(ExchangeVersion.Exchange2010);
+
 			if (string.IsNullOrEmpty(username))
 			{
 				_service.UseDefaultCredentials = true;
