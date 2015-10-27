@@ -1,15 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 using FindFreeRoom.ExchangeConnector.Base;
 using Microsoft.Exchange.WebServices.Data;
+using Task = System.Threading.Tasks.Task;
 
 namespace FindFreeRoom.ExchangeConnector
 {
 	public class ExchangeConnector
 	{
+		private static readonly TimeSpan CreationTimeout = TimeSpan.FromSeconds(60);
 		private readonly ExchangeService _service;
 		private readonly string _serverUrl;
 		private readonly string _serviceEmail;
@@ -72,7 +74,7 @@ namespace FindFreeRoom.ExchangeConnector
 					yield return new RoomInfo
 					{
 						LocationId = list.Address,
-                        RoomId = room.Address,
+						RoomId = room.Address,
 						Name = room.Name
 					};
 				}
@@ -102,11 +104,11 @@ namespace FindFreeRoom.ExchangeConnector
 			var roomsArray = rooms.ToArray();
 			var attendees =
 				roomsArray.Select(
-					r => new AttendeeInfo {AttendeeType = MeetingAttendeeType.Room, ExcludeConflicts = false, SmtpAddress = r.RoomId}).ToList();
+					r => new AttendeeInfo { AttendeeType = MeetingAttendeeType.Room, ExcludeConflicts = false, SmtpAddress = r.RoomId }).ToList();
 			var timeWindow = new TimeWindow(DateTime.Now, DateTime.Now.AddDays(1));
 
 			AvailabilityOptions options = new AvailabilityOptions
-			{	
+			{
 				MeetingDuration = 30,
 				RequestedFreeBusyView = FreeBusyViewType.FreeBusy
 			};
@@ -118,6 +120,62 @@ namespace FindFreeRoom.ExchangeConnector
 				var info = Helper.CollapseCalendar(availability.CalendarEvents.Select(x => new TimeInterval(x.StartTime, x.EndTime)));
 				return new RoomAvailabilityInfo(info, room);
 			});
+		}
+
+		public Task<bool> ReserveRoom(RoomInfo room, TimeSpan duration)
+		{
+			Appointment appointment = new Appointment(_service);
+
+			// Set the properties on the appointment object to create the appointment.
+			appointment.Subject = "Room reservation";
+			appointment.Body = $"Automatically created by FindMeRoomOSS on {DateTime.Now}";
+			appointment.Start = DateTime.Now;
+			appointment.End = appointment.Start + duration;
+			appointment.Location = room.RoomId;
+			appointment.RequiredAttendees.Add(room.RoomId);
+
+			// Save the appointment to your calendar.
+			appointment.Save(SendInvitationsMode.SendToAllAndSaveCopy);
+
+			PropertySet psPropSet = new PropertySet(BasePropertySet.FirstClassProperties);
+
+			// Verify that the appointment was created by using the appointment's item ID.
+			appointment = Item.Bind(_service, appointment.Id, psPropSet) as Appointment;
+			if (appointment == null)
+			{
+				return Task.FromResult(false);
+			}
+			return Task.Run(async () =>
+				{
+					var finishTime = DateTime.Now + CreationTimeout;
+					Attendee roomAttendee;
+					// wait till the room accepts
+					do
+					{
+						Debug.WriteLine("Waiting for response...");
+						await Task.Delay(1000);
+
+						// refresh appointment data
+						appointment = Item.Bind(_service, appointment.Id, psPropSet) as Appointment;
+						if (appointment == null)
+						{
+							Debug.WriteLine("Appointment has been deleted");
+							return false;
+						}
+						roomAttendee = appointment.RequiredAttendees.FirstOrDefault(att => att.Address == room.RoomId);
+						if (roomAttendee == null)
+						{
+							Debug.WriteLine("Someone is messing with our appointment");
+							return false;
+						}
+					} while (DateTime.Now < finishTime && (
+							!roomAttendee.ResponseType.HasValue ||
+							roomAttendee.ResponseType == MeetingResponseType.Unknown ||
+							roomAttendee.ResponseType == MeetingResponseType.NoResponseReceived
+						));
+					Debug.WriteLine($"Response is {roomAttendee.ResponseType}...");
+					return roomAttendee.ResponseType.HasValue && roomAttendee.ResponseType.Value == MeetingResponseType.Accept;
+				});
 		}
 	}
 }
