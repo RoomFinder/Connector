@@ -43,9 +43,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Convertions.cs" />
+    <Compile Include="Data\Convertions.cs" />
     <Compile Include="IService.cs" />
-    <Compile Include="RoomContract.cs" />
+    <Compile Include="Data\RoomDataContract.cs" />
     <Compile Include="Service.cs" />
     <Compile Include="ILog.cs" />
     <Compile Include="IStatusMonitor.cs" />
