@@ -37,7 +37,17 @@ namespace FindFreeRoom.ConnectorConsole
 			var roomsNearby = connector.GetFilteredRooms();
 			var roomsWithLocations = locations.ResolveLocations(roomsNearby);
 
-			connector.PrintAvaialility(roomsWithLocations);
+			foreach (var room in connector.GetAvaialility(roomsWithLocations))
+			{
+				if (room.Availability == TimeInterval.Zero)
+				{
+					Console.WriteLine($"{room.Room.Name} is not available in the nearest future");
+				}
+				else
+				{
+					Console.WriteLine($"{room.Room.Name} is available from {room.Availability.Start} for {(room.Availability.End - room.Availability.Start).TotalMinutes} minutes");
+				}
+			}
 		}
 	}
 }

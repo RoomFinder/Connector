@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Diagnostics;
 using System.Linq;
 using FindFreeRoom.ExchangeConnector.Base;
 using Microsoft.Exchange.WebServices.Data;
@@ -96,17 +97,12 @@ namespace FindFreeRoom.ExchangeConnector
 			return _service.GetRoomLists().Select(x => x.Address);
 		}
 
-		public void PrintAvaialility(IEnumerable<RoomInfo> rooms)
+		public IEnumerable<RoomAvailabilityInfo> GetAvaialility(IEnumerable<RoomInfo> rooms)
 		{
+			var roomsArray = rooms.ToArray();
 			var attendees =
-				rooms.Select(
+				roomsArray.Select(
 					r => new AttendeeInfo {AttendeeType = MeetingAttendeeType.Room, ExcludeConflicts = false, SmtpAddress = r.RoomId}).ToList();
-			attendees.Add(new AttendeeInfo()
-			{
-				SmtpAddress = _serviceEmail,
-				AttendeeType = MeetingAttendeeType.Organizer
-			});
-
 			var timeWindow = new TimeWindow(DateTime.Now, DateTime.Now.AddDays(1));
 
 			AvailabilityOptions options = new AvailabilityOptions
@@ -116,15 +112,12 @@ namespace FindFreeRoom.ExchangeConnector
 			};
 			var availabilities = _service.GetUserAvailability(attendees, timeWindow, AvailabilityData.FreeBusy, options);
 
-			var table = attendees.Zip(availabilities.AttendeesAvailability, (attendee, availability) =>
+			Debug.Assert(roomsArray.Length == availabilities.AttendeesAvailability.Count, "Invalid server response");
+			return roomsArray.Zip(availabilities.AttendeesAvailability, (room, availability) =>
 			{
 				var info = Helper.CollapseCalendar(availability.CalendarEvents.Select(x => new TimeInterval(x.StartTime, x.EndTime)));
-				return new Tuple<string, DateTime, TimeSpan>(attendee.SmtpAddress, info.Start, info.End - info.Start);
+				return new RoomAvailabilityInfo(info, room);
 			});
-			foreach (var tuple in table)
-			{
-				Console.WriteLine($"{tuple.Item1} is available from {tuple.Item2} for {tuple.Item3}");
-			}
 		}
 	}
 }
