@@ -25,7 +25,7 @@ namespace ConnectorWebService
 				{
 					return;
 				}
-				var expiredTickets = AllSessions.Where(session => session.Value.ExpirationDate > DateTime.Now).Select(session => session.Key).ToArray();
+				var expiredTickets = AllSessions.Where(session => DateTime.Now > session.Value.ExpirationDate).Select(session => session.Key).ToArray();
 				foreach (var expiredTicket in expiredTickets)
 				{
 					Session tmp;
