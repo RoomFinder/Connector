@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LocationMapGenerator", "Loc
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExchangeConnector.Tests", "ExchangeConnector.Tests\ExchangeConnector.Tests.csproj", "{9D215473-4B55-448E-BB8C-B27C18BB318F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConnectorWebServer", "ConnectorWebServer\ConnectorWebServer.csproj", "{4B6BB1E7-4537-4203-9F4F-B881F838EAD1}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConnectorWebService", "ConnectorWebService\ConnectorWebService.csproj", "{9481F65D-94BF-4A39-B5F3-E484C4842003}"
 EndProject
 Global
@@ -35,6 +37,10 @@ Global
 		{9D215473-4B55-448E-BB8C-B27C18BB318F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9D215473-4B55-448E-BB8C-B27C18BB318F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9D215473-4B55-448E-BB8C-B27C18BB318F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4B6BB1E7-4537-4203-9F4F-B881F838EAD1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4B6BB1E7-4537-4203-9F4F-B881F838EAD1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4B6BB1E7-4537-4203-9F4F-B881F838EAD1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4B6BB1E7-4537-4203-9F4F-B881F838EAD1}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9481F65D-94BF-4A39-B5F3-E484C4842003}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{9481F65D-94BF-4A39-B5F3-E484C4842003}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9481F65D-94BF-4A39-B5F3-E484C4842003}.Release|Any CPU.ActiveCfg = Release|Any CPU
