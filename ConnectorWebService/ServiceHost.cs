@@ -21,6 +21,7 @@ namespace ConnectorWebService
 			Log = log;
 			_statusMonitor = statusMonitor;
 			_host = new WebServiceHost(typeof(Service), ServiceUri);
+			// TODO: Enable HTTPS - http://stackoverflow.com/questions/14933696
 			_host.AddDefaultEndpoints()[0].Binding = new WebHttpBinding();
 			_host.Description.Endpoints[0].Behaviors.Add(new WebHttpBehavior { HelpEnabled = true });
 		}
