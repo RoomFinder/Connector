@@ -45,7 +45,7 @@ namespace FindFreeRoom.ConnectorConsole
 				}
 				else
 				{
-					Console.WriteLine($"{room.Room.Name} is available from {room.Availability.Start} for {(room.Availability.End - room.Availability.Start).TotalMinutes} minutes");
+					Console.WriteLine($"{room.Room.Name} is available from {room.Availability.Start} for {room.Availability.Duration.TotalMinutes} minutes");
 				}
 			}
 		}

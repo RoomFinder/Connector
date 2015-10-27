@@ -8,10 +8,12 @@ namespace FindFreeRoom.ExchangeConnector.Base
 {
 	public class TimeInterval
 	{
-		public static TimeInterval Zero = new TimeInterval(DateTime.MinValue, DateTime.MinValue);
+		public static readonly TimeInterval Zero = new TimeInterval(DateTime.MinValue, DateTime.MinValue);
 
 		public DateTime Start;
 		public DateTime End;
+
+		public TimeSpan Duration => End - Start;
 
 		public TimeInterval(DateTime start, DateTime end)
 		{
