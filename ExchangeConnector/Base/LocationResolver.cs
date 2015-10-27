@@ -36,12 +36,8 @@ namespace FindFreeRoom.ExchangeConnector.Base
 			};
 			if (items.Length == 7)
 			{
-				location.Geometry = new Geometry
-				{
-					X = float.Parse(items[4]),
-					Y = float.Parse(items[5]),
-					Elevation = float.Parse(items[6])
-				};
+				location.Geometry = new Geometry(
+					float.Parse(items[4]), float.Parse(items[5]), float.Parse(items[6]));
 			}
 			return location;
 		}

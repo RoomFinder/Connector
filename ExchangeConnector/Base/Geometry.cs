@@ -2,8 +2,15 @@
 {
 	public class Geometry
 	{
-		public float X;
-		public float Y;
-		public float Elevation;
+		public Geometry(double latitude, double longitude, double elevation)
+		{
+			Latitude = latitude;
+			Longitude = longitude;
+			Elevation = elevation;
+		}
+
+		public double Latitude;
+		public double Longitude;
+		public double Elevation;
 	}
 }
