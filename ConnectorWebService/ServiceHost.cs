@@ -9,16 +9,18 @@ namespace ConnectorWebService
 {
 	public class ServiceHost : IDisposable
 	{
-		private ILog _log;
+		private static readonly Uri ServiceUri = new Uri("http://0.0.0.0:18799/api");
+
+		internal static ILog Log;
 		private IStatusMonitor _statusMonitor;
 		private readonly WebServiceHost _host;
 		private readonly CancellationTokenSource _gcCancellation = new CancellationTokenSource();
 
 		public ServiceHost(ILog log, IStatusMonitor statusMonitor)
 		{
-			_log = log;
+			Log = log;
 			_statusMonitor = statusMonitor;
-			_host = new WebServiceHost(typeof(Service), new Uri("http://0.0.0.0:18799/api"));
+			_host = new WebServiceHost(typeof(Service), ServiceUri);
 			_host.AddDefaultEndpoints()[0].Binding = new WebHttpBinding();
 			_host.Description.Endpoints[0].Behaviors.Add(new WebHttpBehavior { HelpEnabled = true });
 		}
@@ -30,10 +32,11 @@ namespace ConnectorWebService
 				_host.Open();
 				Task.Run(() => SessionManager.GarbageCollectorAsync(_gcCancellation.Token));
 				_statusMonitor?.SetOnline();
+				Log?.AddMessage("Service successfully started at {0}", ServiceUri);
 			}
 			catch (Exception ex)
 			{
-				_log?.AddMessage("Failed to start: {0}", ex);
+				Log?.AddMessage("Failed to start: {0}", ex);
 				_statusMonitor?.SetError(ex.Message);
 			}
 		}
@@ -48,14 +51,14 @@ namespace ConnectorWebService
 			}
 			catch (Exception ex)
 			{
-				_log?.AddMessage("Failed to start: {0}", ex);
+				Log?.AddMessage("Failed to start: {0}", ex);
 				_statusMonitor?.SetError(ex.Message);
 			}
 		}
 
 		public void Dispose()
 		{
-			_log = null;
+			Log = null;
 			_statusMonitor = null;
 			Stop();
 		}

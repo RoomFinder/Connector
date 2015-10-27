@@ -25,7 +25,12 @@ namespace ConnectorWebServer
 
 		public void AddMessage(string message)
 		{
-			Dispatch(() =>_textBox.Text += $"[{DateTime.Now}] {message}\n\n");
+			Dispatch(() =>
+			{
+				_textBox.Text += $"[{DateTime.Now}] {message}{Environment.NewLine}{Environment.NewLine}";
+				_textBox.SelectionLength = 0;
+				_textBox.SelectionStart = _textBox.TextLength;
+			});
 		}
 
 		public void Display()

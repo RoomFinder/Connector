@@ -36,9 +36,11 @@
 			this._textBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+			this._textBox.BackColor = System.Drawing.SystemColors.Window;
 			this._textBox.Location = new System.Drawing.Point(12, 12);
 			this._textBox.Multiline = true;
 			this._textBox.Name = "_textBox";
+			this._textBox.ReadOnly = true;
 			this._textBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
 			this._textBox.Size = new System.Drawing.Size(260, 238);
 			this._textBox.TabIndex = 0;

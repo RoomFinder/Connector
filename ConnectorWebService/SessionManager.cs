@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -31,7 +30,7 @@ namespace ConnectorWebService
 					Session tmp;
 					if (AllSessions.TryRemove(expiredTicket, out tmp))
 					{
-						Debug.WriteLine($"Session {expiredTicket} expires");
+						ServiceHost.Log?.AddMessage($"Session {expiredTicket} expires");
 					}
 				}
 			}
@@ -39,7 +38,7 @@ namespace ConnectorWebService
 
 		public static bool TryAdd(string ticket, ExchangeConnector connector)
 		{
-			Debug.WriteLine($"New session created ({ticket})");
+			ServiceHost.Log?.AddMessage($"New session created ({ticket.Substring(0, 5)}...)");
 			return AllSessions.TryAdd(ticket, new Session(connector, SessionTimeout));
 		}
 
