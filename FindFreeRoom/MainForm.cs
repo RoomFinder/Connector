@@ -72,6 +72,7 @@ namespace FindFreeRoom
 					var item = choicesListView.Items.Add(new ListViewItem(new[]
 					{
 						result.Room.Name,
+						FormatLocation(result.Room.Location),
 						FormatAvailableIn((int)(result.Availability.Start - DateTime.Now).TotalMinutes),
 						FormatAvailableFor((int)result.Availability.Duration.TotalMinutes)
 					}));
@@ -84,6 +85,11 @@ namespace FindFreeRoom
 				MessageBox.Show(ex.Message);
 				Application.Exit();
 			}
+		}
+
+		private static string FormatLocation(Location location)
+		{
+			return $"{location.Building} {location.Floor}";
 		}
 
 		private static string FormatAvailableIn(int minutes)

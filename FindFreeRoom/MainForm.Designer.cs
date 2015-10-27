@@ -38,6 +38,7 @@
 			this.clmName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.clmWaitingTime = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.clmWindowSize = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.clmLocation = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.buttonPanel.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -62,12 +63,13 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.choicesListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.clmName,
+            this.clmLocation,
             this.clmWaitingTime,
             this.clmWindowSize});
 			this.choicesListView.Location = new System.Drawing.Point(0, 70);
 			this.choicesListView.MultiSelect = false;
 			this.choicesListView.Name = "choicesListView";
-			this.choicesListView.Size = new System.Drawing.Size(587, 166);
+			this.choicesListView.Size = new System.Drawing.Size(705, 166);
 			this.choicesListView.TabIndex = 1;
 			this.choicesListView.UseCompatibleStateImageBehavior = false;
 			this.choicesListView.View = System.Windows.Forms.View.Details;
@@ -96,7 +98,7 @@
 			this.buttonPanel.Dock = System.Windows.Forms.DockStyle.Top;
 			this.buttonPanel.Location = new System.Drawing.Point(0, 0);
 			this.buttonPanel.Name = "buttonPanel";
-			this.buttonPanel.Size = new System.Drawing.Size(587, 68);
+			this.buttonPanel.Size = new System.Drawing.Size(705, 68);
 			this.buttonPanel.TabIndex = 3;
 			// 
 			// timeLabel
@@ -128,11 +130,16 @@
 			this.clmWindowSize.Text = "Available for";
 			this.clmWindowSize.Width = 80;
 			// 
+			// clmLocation
+			// 
+			this.clmLocation.Text = "Location";
+			this.clmLocation.Width = 120;
+			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(587, 236);
+			this.ClientSize = new System.Drawing.Size(705, 236);
 			this.Controls.Add(this.buttonPanel);
 			this.Controls.Add(this.choicesListView);
 			this.Name = "MainForm";
@@ -155,6 +162,7 @@
 		private System.Windows.Forms.ColumnHeader clmName;
 		private System.Windows.Forms.ColumnHeader clmWaitingTime;
 		private System.Windows.Forms.ColumnHeader clmWindowSize;
+		private System.Windows.Forms.ColumnHeader clmLocation;
 	}
 }
 
