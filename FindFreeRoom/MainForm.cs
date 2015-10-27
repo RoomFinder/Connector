@@ -47,28 +47,70 @@ namespace FindFreeRoom
 			choicesListView.Items.Clear();
 			choicesListView.Refresh();
 
-			// TODO: need progress bar
-
-			var roomsNearby = _connector.GetFilteredRooms();
-			var roomsWithLocations = _locations.ResolveLocations(roomsNearby);
-
-			var results = _connector.GetAvaialility(roomsWithLocations).Select(
-				room => 
-					room.Availability == TimeInterval.Zero ? 
-						$"{room.Room.Name} is not available in the nearest future" : 
-						$"{room.Room.Name} is available from {room.Availability.Start} for {room.Availability.Duration.TotalMinutes} minutes").ToArray();
-
-			choicesListView.BeginUpdate();
-			foreach (var result in results)
+			try
 			{
-				choicesListView.Items.Add(result);
+				// TODO: need progress bar
+
+				var roomsNearby = _connector.GetFilteredRooms();
+				var roomsWithLocations = _locations.ResolveLocations(roomsNearby);
+
+				var results = _connector.GetAvaialility(roomsWithLocations)
+					.Where(room => room.Availability != TimeInterval.Zero)
+					.ToArray();
+
+				//	.Select(room => 
+				//		$"{room.Room.Name} from {room.Availability.Start.ToShortTimeString()} for {room.Availability.Duration.TotalMinutes} minutes").ToArray();
+
+				choicesListView.BeginUpdate();
+				foreach (var result in results)
+				{
+					var item = choicesListView.Items.Add(result.Room.Name);
+					item.Tag = result.Room;
+				}
+				choicesListView.EndUpdate();
 			}
-			choicesListView.EndUpdate();
+			catch (Exception ex)
+			{
+				MessageBox.Show(ex.Message);
+				Application.Exit();
+			}
 		}
 
 		private void ticker_Tick(object sender, EventArgs e)
 		{
 			timeLabel.Text = DateTime.Now.ToShortTimeString();
+		}
+
+		private void choicesListView_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
+		{
+			try
+			{
+				if (choicesListView.SelectedItems.Count == 1)
+				{
+					reserveButton.Enabled = true;
+				}
+				else
+				{
+					reserveButton.Enabled = false;
+				}
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show(ex.Message);
+			}
+		}
+
+		private void reserveButton_Click(object sender, EventArgs e)
+		{
+			try
+			{
+				var item = choicesListView.SelectedItems[0];
+				_connector.ReserveRoom((RoomInfo) item.Tag, TimeSpan.FromMinutes(30));
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show(ex.Message);
+			}
 		}
 	}
 }

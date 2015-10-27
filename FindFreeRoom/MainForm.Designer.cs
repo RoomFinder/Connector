@@ -58,10 +58,11 @@
 			this.choicesListView.Location = new System.Drawing.Point(0, 0);
 			this.choicesListView.MultiSelect = false;
 			this.choicesListView.Name = "choicesListView";
-			this.choicesListView.Size = new System.Drawing.Size(284, 208);
+			this.choicesListView.Size = new System.Drawing.Size(353, 154);
 			this.choicesListView.TabIndex = 1;
 			this.choicesListView.UseCompatibleStateImageBehavior = false;
 			this.choicesListView.View = System.Windows.Forms.View.List;
+			this.choicesListView.ItemSelectionChanged += new System.Windows.Forms.ListViewItemSelectionChangedEventHandler(this.choicesListView_ItemSelectionChanged);
 			// 
 			// reserveButton
 			// 
@@ -76,7 +77,7 @@
 			this.reserveButton.TabIndex = 1;
 			this.reserveButton.Text = "Reserve";
 			this.reserveButton.UseVisualStyleBackColor = false;
-			this.reserveButton.Visible = false;
+			this.reserveButton.Click += new System.EventHandler(this.reserveButton_Click);
 			// 
 			// buttonPanel
 			// 
@@ -86,7 +87,7 @@
 			this.buttonPanel.Dock = System.Windows.Forms.DockStyle.Top;
 			this.buttonPanel.Location = new System.Drawing.Point(0, 0);
 			this.buttonPanel.Name = "buttonPanel";
-			this.buttonPanel.Size = new System.Drawing.Size(284, 68);
+			this.buttonPanel.Size = new System.Drawing.Size(353, 68);
 			this.buttonPanel.TabIndex = 3;
 			// 
 			// timeLabel
@@ -107,7 +108,7 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(284, 208);
+			this.ClientSize = new System.Drawing.Size(353, 154);
 			this.Controls.Add(this.buttonPanel);
 			this.Controls.Add(this.choicesListView);
 			this.Name = "MainForm";
