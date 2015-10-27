@@ -6,6 +6,7 @@ using System.Net;
 using System.ServiceModel;
 using System.ServiceModel.Web;
 using System.Threading;
+using System.Threading.Tasks;
 using FindFreeRoom.ExchangeConnector;
 using FindFreeRoom.ExchangeConnector.Base;
 
@@ -15,7 +16,7 @@ namespace ConnectorWebService
 	public class Service : IService
 	{
 
-		public IEnumerable<RoomDataContract> GetRooms(string ticket)
+		private static ExchangeConnector GetConnector(string ticket)
 		{
 			Debug.WriteLine($"Request on thread {Thread.CurrentThread.ManagedThreadId}");
 			ExchangeConnector connector;
@@ -23,9 +24,79 @@ namespace ConnectorWebService
 			{
 				throw new WebFaultException<string>("Invalid ticket", HttpStatusCode.Unauthorized);
 			}
-			var roomsNearby = connector.GetFilteredRooms();
-			var availableRooms = connector.GetAvaialility(roomsNearby).Where(a => a.Availability != TimeInterval.Zero);
-			return availableRooms.Select(Convertions.ToContract);
+
+			return connector;
+		}
+
+		public IEnumerable<RoomDataContract> GetRooms(string ticket)
+		{
+			try
+			{
+				var connector = GetConnector(ticket);
+				var roomsNearby = connector.GetFilteredRooms();
+				var availableRooms = connector.GetAvaialility(roomsNearby).Where(a => a.Availability != TimeInterval.Zero);
+				return availableRooms.Select(Convertions.ToContract);
+			}
+			catch (WebFaultException<string>)
+			{
+				throw;
+			}
+			catch (Exception ex)
+			{
+				throw new WebFaultException<string>(ex.Message, HttpStatusCode.InternalServerError);
+			}
+		}
+
+		public RoomDataContract GetRoom(string roomId, string ticket)
+		{
+			try
+			{
+				var connector = GetConnector(ticket);
+				var theRoom = connector.GetFilteredRooms().FirstOrDefault(r => string.Equals(r.RoomId, roomId, StringComparison.InvariantCultureIgnoreCase));
+				if (theRoom == null)
+				{
+					throw new WebFaultException<string>("Unable to find the requested room", HttpStatusCode.NotFound);
+				}
+				// TODO: use shared instance
+				LocationResolver locations = new LocationResolver();
+				locations.Load("locationMap.csv");
+				var theRoomAvailability = connector.GetAvaialility(locations.ResolveLocations(new [] { theRoom })).First();
+			
+				return theRoomAvailability.ToContract();
+			}
+			catch (WebFaultException<string>)
+			{
+				throw;
+			}
+			catch (Exception ex)
+			{
+				throw new WebFaultException<string>(ex.Message, HttpStatusCode.InternalServerError);
+			}
+		}
+
+		public async Task ReserveRoom(int duration, string roomId, string ticket)
+		{
+			try
+			{
+				var connector = GetConnector(ticket);
+				var theRoom = connector.GetFilteredRooms().FirstOrDefault(r => string.Equals(r.RoomId, roomId, StringComparison.InvariantCultureIgnoreCase));
+				if (theRoom == null)
+				{
+					throw new WebFaultException<string>("Unable to find the requested room", HttpStatusCode.NotFound);
+				}
+				if (!await connector.ReserveRoom(theRoom, TimeSpan.FromMinutes(duration)))
+				{
+					throw new WebFaultException<string>("Unable to reserve the room", HttpStatusCode.Conflict);
+				}
+			}
+			catch (WebFaultException<string>)
+			{
+				throw;
+			}
+			catch (Exception ex)
+			{
+				throw new WebFaultException<string>(ex.Message, HttpStatusCode.InternalServerError);
+			}
 		}
 
 		public string Login(string username, string password, string email, string site, string serviceUrl)
@@ -62,9 +133,9 @@ namespace ConnectorWebService
 				}
 				return ticket;
 			}
-			catch
+			catch (Exception ex)
 			{
-				throw new WebFaultException(HttpStatusCode.Unauthorized);
+				throw new WebFaultException<string>(ex.Message, HttpStatusCode.Unauthorized);
 			}
 		}
 	}
