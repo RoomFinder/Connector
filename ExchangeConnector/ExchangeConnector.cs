@@ -108,6 +108,19 @@ namespace FindFreeRoom.ExchangeConnector
 
 		public IEnumerable<RoomAvailabilityInfo> GetAvaialility(IEnumerable<RoomInfo> rooms)
 		{
+			// TODO: Investigate
+			const int chunkSize = 40;
+			var roomsArray = rooms.ToArray();
+			var result = Enumerable.Empty<RoomAvailabilityInfo>();
+			for (int i = 0; i < roomsArray.Length; i += chunkSize)
+			{
+				result = result.Concat(GetAvaialilityInternal(roomsArray.Skip(i).Take(chunkSize)));
+			}
+			return result;
+		}
+
+		private IEnumerable<RoomAvailabilityInfo> GetAvaialilityInternal(IEnumerable<RoomInfo> rooms)
+		{
 			var roomsArray = rooms.ToArray();
 			var attendees =
 				roomsArray.Select(
