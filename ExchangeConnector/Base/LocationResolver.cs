@@ -58,5 +58,10 @@ namespace FindFreeRoom.ExchangeConnector.Base
 				Location = _locationMap[x.LocationId]
 			});
 		}
+
+		public IEnumerable<RoomAvailabilityInfo> SmartSort(IEnumerable<RoomAvailabilityInfo> rooms, Location myLocation)
+		{
+			return new SmartSearch(myLocation).Sort(rooms);
+		}
 	}
 }

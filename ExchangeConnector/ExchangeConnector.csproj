@@ -53,6 +53,8 @@
     <Compile Include="Base\Location.cs" />
     <Compile Include="Base\LocationResolver.cs" />
     <Compile Include="Base\RoomInfo.cs" />
+    <Compile Include="Base\SmartRoomComparer.cs" />
+    <Compile Include="Base\SmartSearch.cs" />
     <Compile Include="Base\TimeInterval.cs" />
     <Compile Include="ExchangeConnector.cs" />
     <Compile Include="Helper.cs" />
