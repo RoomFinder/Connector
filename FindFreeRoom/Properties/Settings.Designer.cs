@@ -46,5 +46,29 @@ namespace FindFreeRoom.Properties {
                 this["currentSite"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string currentBuilding {
+            get {
+                return ((string)(this["currentBuilding"]));
+            }
+            set {
+                this["currentBuilding"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string currentFloor {
+            get {
+                return ((string)(this["currentFloor"]));
+            }
+            set {
+                this["currentFloor"] = value;
+            }
+        }
     }
 }

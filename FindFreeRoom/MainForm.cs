@@ -16,6 +16,7 @@ namespace FindFreeRoom
 	{
 		private ExchangeConnector.ExchangeConnector _connector;
 		private LocationResolver _locations;
+		private Location _myLocation;
 
 		public MainForm()
 		{
@@ -34,6 +35,13 @@ namespace FindFreeRoom
 				_locations.Load("locationMap.csv");
 				_connector.LocationFilter = _locations.OfSite(currentSite).ToArray(); // filter locations by site
 				_connector.Connect();
+
+				_myLocation = new Location
+				{
+					Site =  props.currentSite,
+					Building = props.currentBuilding,
+					Floor = props.currentFloor
+				};
 			}
 			catch (Exception ex)
 			{
@@ -54,8 +62,8 @@ namespace FindFreeRoom
 				var roomsNearby = _connector.GetFilteredRooms();
 				var roomsWithLocations = _locations.ResolveLocations(roomsNearby);
 
-				var results = _connector.GetAvaialility(roomsWithLocations)
-					.Where(room => room.Availability != TimeInterval.Zero)
+				var results = _locations.SmartSort(_connector.GetAvaialility(roomsWithLocations)
+					.Where(room => room.Availability != TimeInterval.Zero), _myLocation)
 					.ToArray();
 
 				//	.Select(room => 
