@@ -100,12 +100,17 @@ namespace FindFreeRoom
 			}
 		}
 
-		private void reserveButton_Click(object sender, EventArgs e)
+		private async void reserveButton_Click(object sender, EventArgs e)
 		{
 			try
 			{
 				var item = choicesListView.SelectedItems[0];
-				_connector.ReserveRoom((RoomInfo) item.Tag, TimeSpan.FromMinutes(30));
+				;
+
+				if (!await _connector.ReserveRoom((RoomInfo)item.Tag, TimeSpan.FromMinutes(30)))
+				{
+					throw new Exception("Unable to reserve the room");
+				}
 			}
 			catch (Exception ex)
 			{
