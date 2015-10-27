@@ -88,6 +88,10 @@ namespace ConnectorWebService
 
 		public async Task ReserveRoom(int duration, string roomId, string ticket)
 		{
+			if (duration <= 0)
+			{
+				throw new WebFaultException<string>($"{nameof(duration)} should be > 0", HttpStatusCode.BadRequest);
+			}
 			try
 			{
 				var connector = GetConnector(ticket);
