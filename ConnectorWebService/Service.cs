@@ -15,7 +15,7 @@ namespace ConnectorWebService
 	[ServiceBehavior(ConcurrencyMode = ConcurrencyMode.Multiple)]
 	public class Service : IService
 	{
-		private const int MaxRoomsInResponse = 10;
+		private const int MaxRoomsInResponse = 15;
 		private static readonly LocationResolver LocationResolver = new LocationResolver();
 
 		static Service()
