@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using FindFreeRoom.ExchangeConnector;
+using FindFreeRoom.ExchangeConnector.Base;
 
 namespace ConnectorWebService
 {
@@ -14,6 +15,24 @@ namespace ConnectorWebService
 				Name = info.Room.Name,
 				AvailableFrom = info.Availability.Start.ToRfcDateTimeString(),
 				AvailableForMinutes = (int)info.Availability.Duration.TotalMinutes
+			};
+			if (info.Room.Location != null)
+			{
+				contract.Site = info.Room.Location.Site;
+				contract.Building = info.Room.Location.Building;
+				contract.Floor = info.Room.Location.Floor;
+			}
+			return contract;
+		}
+
+		public static MeetingInfoDataContract ToContract(this MeetingInfo info)
+		{
+			var contract = new MeetingInfoDataContract
+			{
+				Name = info.Name,
+				StartTime = info.StartTime.ToRfcDateTimeString(),
+				EndTime = info.EndTime.ToRfcDateTimeString(),
+				RoomName = info.Room.Name
 			};
 			if (info.Room.Location != null)
 			{

@@ -48,6 +48,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Base\MeetingInfo.cs" />
     <Compile Include="Base\Distance.cs" />
     <Compile Include="Base\Geometry.cs" />
     <Compile Include="Base\Location.cs" />

@@ -136,6 +136,23 @@ namespace ConnectorWebService
 			}
 		}
 
+		public IEnumerable<MeetingInfoDataContract> GetMeetings(string ticket)
+		{
+			try
+			{
+				var connector = GetConnector(ticket);
+				return connector.GetMyMeetings().Select(Convertions.ToContract);
+			}
+			catch (WebFaultException<string>)
+			{
+				throw;
+			}
+			catch (Exception ex)
+			{
+				throw new WebFaultException<string>(ex.Message, HttpStatusCode.InternalServerError);
+			}
+		}
+
 		public string Login(string username, string password, string email, string site, string serviceUrl)
 		{
 			Debug.WriteLine($"Request on thread {Thread.CurrentThread.ManagedThreadId}");

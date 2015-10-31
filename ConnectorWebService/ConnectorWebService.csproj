@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Data\MeetingInfoDataContract.cs" />
     <Compile Include="Data\Convertions.cs" />
     <Compile Include="IService.cs" />
     <Compile Include="Data\RoomDataContract.cs" />

@@ -197,5 +197,36 @@ namespace FindFreeRoom.ExchangeConnector
 					return roomAttendee.ResponseType.HasValue && roomAttendee.ResponseType.Value == MeetingResponseType.Accept;
 				});
 		}
+
+		public IEnumerable<MeetingInfo> GetMyMeetings()
+		{
+			var startDate = DateTime.Now;
+			var endDate = startDate.AddDays(1);
+
+			var calendar = CalendarFolder.Bind(_service, WellKnownFolderName.Calendar, new PropertySet());
+			var view = new CalendarView(startDate, endDate, 10)
+			{
+				PropertySet =
+					new PropertySet(
+						ItemSchema.Subject,
+						AppointmentSchema.Start,
+						AppointmentSchema.End,
+						AppointmentSchema.Location)
+			};
+			foreach (var appointment in calendar.FindAppointments(view))
+			{
+				var appointmentInfo = new MeetingInfo
+				{
+					Name = appointment.Subject,
+					StartTime = appointment.Start,
+					EndTime = appointment.End,
+					Room = new RoomInfo
+					{
+						Name = appointment.Location
+					}
+				};
+				yield return appointmentInfo;
+			}
+		}
 	}
 }

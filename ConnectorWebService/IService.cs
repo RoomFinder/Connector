@@ -21,6 +21,10 @@ namespace ConnectorWebService
 		Task ReserveRoom(int duration, string roomId, string ticket);
 
 		[OperationContract]
+		[WebGet(UriTemplate = "meetings?ticket={ticket}", ResponseFormat = WebMessageFormat.Json)]
+		IEnumerable<MeetingInfoDataContract> GetMeetings(string ticket);
+
+		[OperationContract]
 		[WebInvoke(Method = "POST", UriTemplate = "login", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.WrappedRequest)]
 		string Login(string username, string password, string email, string site, string serviceUrl);
 	}
